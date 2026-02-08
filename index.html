@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Be My Valentine?</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+    <style>
+      body {
+        background-color: #fff5f5;
+        overflow: hidden;
+        transition: background-color 1s ease;
+      }
+
+      #main-card {
+        position: relative;
+        transition: transform 0.5s ease;
+      }
+
+      .heart-shape {
+        width: 300px;
+        height: 300px;
+        background-color: #ff4d6d;
+        clip-path: path(
+          "M150 280s-140-80-140-180c0-60 50-100 90-100 40 0 50 30 50 30s10-30 50-30c40 0 90 40 90 100 0 100-140 180-140 180z"
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        box-shadow: 0 10px 25px rgba(255, 77, 109, 0.3);
+      }
+
+      .couple-img {
+        width: 180px;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 4px solid white;
+      }
+
+      /* BUTTON CONTAINER - using CSS Grid */
+      .button-area {
+        position: relative;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
+        align-items: center;
+        padding: 20px;
+        min-height: 100px;
+        transition: gap 0.3s ease;
+      }
+
+      /* YES BUTTON - FIXED: Added !important to override Tailwind */
+      #yes-btn {
+        background: linear-gradient(135deg, #ff4d6d, #ff85a1) !important;
+        box-shadow: 0 0 20px rgba(255, 77, 109, 0.6) !important;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+        transform-origin: center !important;
+        grid-column: 1;
+        justify-self: center;
+        width: fit-content;
+        min-width: 120px;
+        /* Remove any conflicting transforms from Tailwind/Animate.css */
+        transform: none !important;
+      }
+
+      #yes-btn:hover {
+        box-shadow: 0 0 30px rgba(255, 77, 109, 0.9) !important;
+        transform: translateY(-2px) scale(var(--yes-scale, 1)) !important;
+      }
+
+      /* NO BUTTON */
+      #no-btn {
+        background: linear-gradient(135deg, #9ca3af, #6b7280);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+        transition: all 0.3s ease;
+        grid-column: 2;
+        justify-self: center;
+        width: fit-content;
+        position: relative;
+      }
+
+      #no-btn:hover {
+        transform: scale(0.95);
+      }
+
+      /* Confetti styles */
+      .confetti {
+        position: fixed;
+        pointer-events: none;
+        z-index: 1000;
+        animation: confetti-fall linear forwards;
+      }
+
+      @keyframes confetti-fall {
+        0% {
+          transform: translateY(-100px) rotate(0deg);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(100vh) rotate(360deg);
+          opacity: 0;
+        }
+      }
+
+      /* Floating hearts animation */
+      .floating-hearts {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      .floating-heart {
+        position: absolute;
+        font-size: 24px;
+        opacity: 0.7;
+        animation: float linear infinite;
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(100vh) rotate(0deg);
+          opacity: 0;
+        }
+        10% {
+          opacity: 0.7;
+        }
+        90% {
+          opacity: 0.7;
+        }
+        100% {
+          transform: translateY(-100px) rotate(360deg);
+          opacity: 0;
+        }
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 640px) {
+        .button-area {
+          grid-template-columns: 1fr;
+          grid-template-rows: 1fr 1fr;
+          gap: 15px;
+          min-height: 150px;
+        }
+
+        #yes-btn {
+          grid-column: 1;
+          grid-row: 1;
+          justify-self: center;
+        }
+
+        #no-btn {
+          grid-column: 1;
+          grid-row: 2;
+          justify-self: center;
+        }
+      }
+    </style>
+  </head>
+
+  <body class="flex items-center justify-center min-h-screen">
+    <!-- Floating hearts background -->
+    <div class="floating-hearts" id="floating-hearts"></div>
+
+    <div
+      id="main-card"
+      class="text-center p-8 bg-white rounded-3xl shadow-2xl z-10 animate__animated animate__fadeIn"
+    >
+      <div class="flex justify-center mb-6">
+        <div
+          class="heart-shape animate__animated animate__pulse animate__infinite"
+        >
+          <img src="/images/cat-hugs.gif" alt="Couple" class="couple-img" />
+        </div>
+      </div>
+
+      <h1 class="text-4xl font-bold text-gray-800 mb-8 italic">
+        Nthabiseng will you be my Valentine? ❤️
+      </h1>
+
+      <!-- Button area -->
+      <div class="button-area" id="button-area">
+        <button
+          id="yes-btn"
+          class="px-10 py-3 text-white font-extrabold rounded-full text-xl"
+          style="
+            transform: scale(1);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+          "
+        >
+          YES!
+        </button>
+
+        <button
+          id="no-btn"
+          class="px-8 py-2 text-white font-bold rounded-full text-lg"
+        >
+          No
+        </button>
+      </div>
+    </div>
+
+    <div
+      id="success-screen"
+      class="hidden fixed inset-0 flex flex-col items-center justify-center z-20 animate__animated animate__zoomIn"
+    >
+      <div class="bg-white p-12 rounded-3xl shadow-2xl max-w-lg mx-4">
+        <h1 class="text-6xl mb-6 text-pink-600 font-bold">🎉 Yay! 🌹</h1>
+        <p class="text-2xl text-pink-600 font-semibold mb-8">
+          I knew you'd say yes! I love you! 💕
+        </p>
+        <div
+          class="text-8xl mb-8 animate__animated animate__heartBeat animate__infinite"
+        >
+          <img src="/images/4B9F367C-6ECF-4B20-9262-317BB080B5EE.GIF" />
+        </div>
+        <p class="text-lg text-gray-600 italic">
+          This is going to be the best Valentine's Day ever!
+        </p>
+      </div>
+    </div>
+
+    <script>
+      const noBtn = document.getElementById("no-btn");
+      const yesBtn = document.getElementById("yes-btn");
+      const mainCard = document.getElementById("main-card");
+      const successScreen = document.getElementById("success-screen");
+      const buttonArea = document.getElementById("button-area");
+      const floatingHearts = document.getElementById("floating-hearts");
+
+      let scale = 1;
+      let clickCount = 0;
+
+      // Remove any conflicting animations from YES button
+      yesBtn.classList.remove("animate__pulse", "animate__infinite");
+
+      // When NO is clicked → YES grows
+      noBtn.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        clickCount++;
+
+        // DEBUG: Log to console to verify function is called
+        console.log("NO clicked! Scale before:", scale);
+
+        // Increase YES button scale
+        scale += 0.25;
+
+        // Apply the scale transform with !important override
+        yesBtn.style.setProperty("transform", `scale(${scale})`, "important");
+        yesBtn.style.setProperty("--yes-scale", scale);
+
+        // Also set inline style as backup
+        yesBtn.style.cssText += `transform: scale(${scale}) !important;`;
+
+        // Increase glow
+        const glowSize = 20 + clickCount * 5;
+        const glowOpacity = 0.6 + clickCount * 0.05;
+        yesBtn.style.boxShadow = `0 0 ${glowSize}px rgba(255, 77, 109, ${glowOpacity})`;
+
+        // DEBUG: Log to console
+        console.log(
+          "Scale after:",
+          scale,
+          "Transform:",
+          yesBtn.style.transform
+        );
+
+        // Add visual feedback to NO button
+        noBtn.classList.add("animate__animated", "animate__headShake");
+        noBtn.style.opacity = `${Math.max(0.3, 1 - clickCount * 0.1)}`;
+
+        // Move NO button to random position within button area
+        const buttonAreaRect = buttonArea.getBoundingClientRect();
+        const noBtnRect = noBtn.getBoundingClientRect();
+
+        // Calculate boundaries with padding
+        const padding = 20;
+        const maxX = buttonAreaRect.width - noBtnRect.width - padding;
+        const maxY = buttonAreaRect.height - noBtnRect.height - padding;
+
+        // Ensure positive values
+        const safeMaxX = Math.max(10, maxX);
+        const safeMaxY = Math.max(10, maxY);
+
+        const randomX = Math.random() * safeMaxX;
+        const randomY = Math.random() * safeMaxY;
+
+        // Store current scale if any
+        const currentNoScale = Math.max(0.7, 1 - clickCount * 0.05);
+
+        // Apply both translation and scale
+        noBtn.style.transform = `translate(${randomX}px, ${randomY}px) scale(${currentNoScale})`;
+
+        // Add heartbeat animation to main card
+        mainCard.classList.add("animate__animated", "animate__heartBeat");
+
+        // Create a small heart animation at click location
+        createClickHeart(event.clientX, event.clientY);
+
+        // Remove animation classes after they complete
+        setTimeout(() => {
+          noBtn.classList.remove("animate__animated", "animate__headShake");
+          mainCard.classList.remove("animate__animated", "animate__heartBeat");
+        }, 1000);
+
+        // Adjust gap between buttons as YES grows
+        const newGap = Math.max(10, 40 - clickCount * 3);
+        buttonArea.style.gap = `${newGap}px`;
+
+        return false;
+      });
+
+      // Create heart animation on NO click
+      function createClickHeart(x, y) {
+        const heart = document.createElement("div");
+        heart.innerHTML = "❤️";
+        heart.style.position = "fixed";
+        heart.style.left = x - 15 + "px";
+        heart.style.top = y - 15 + "px";
+        heart.style.fontSize = "30px";
+        heart.style.zIndex = "1000";
+        heart.style.pointerEvents = "none";
+        heart.classList.add(
+          "animate__animated",
+          "animate__bounceOut",
+          "animate__faster"
+        );
+        document.body.appendChild(heart);
+
+        setTimeout(() => heart.remove(), 1000);
+      }
+
+      // YES logic
+      yesBtn.addEventListener("click", function (event) {
+        event.preventDefault();
+
+        // Add celebration animation
+        mainCard.classList.add("animate__animated", "animate__zoomOut");
+
+        setTimeout(() => {
+          mainCard.classList.add("hidden");
+          successScreen.classList.remove("hidden");
+          document.body.style.backgroundColor = "#ffe4e6";
+
+          // Start enhanced confetti
+          startConfetti();
+
+          // Add romantic message with delay
+          setTimeout(() => {
+            const message = document.createElement("p");
+            message.className =
+              "text-xl text-pink-500 mt-6 italic animate__animated animate__fadeInUp";
+            message.textContent = "You make every day special! 💖";
+            successScreen.querySelector(".bg-white").appendChild(message);
+          }, 50);
+        }, 50);
+
+        return false;
+      });
+
+      function startConfetti() {
+        const confettiTypes = ["❤️", "💕", "💖", "💗", "💓", "💞", "💘"];
+
+        for (let i = 0; i < 80; i++) {
+          const confetti = document.createElement("div");
+          confetti.innerHTML =
+            confettiTypes[Math.floor(Math.random() * confettiTypes.length)];
+          confetti.style.position = "fixed";
+          confetti.style.left = Math.random() * 100 + "vw";
+          confetti.style.top = "-50px";
+          confetti.style.fontSize = Math.random() * 25 + 15 + "px";
+          confetti.style.opacity = "0.9";
+          confetti.style.zIndex = "1000";
+          confetti.style.pointerEvents = "none";
+
+          // Random animation
+          const duration = Math.random() * 3 + 2;
+          const delay = Math.random() * 2;
+
+          confetti.style.animation = `confetti-fall ${duration}s linear ${delay}s forwards`;
+
+          document.body.appendChild(confetti);
+
+          // Remove after animation
+          setTimeout(() => confetti.remove(), (duration + delay) * 1000);
+        }
+      }
+
+      // Create floating hearts background
+      function createFloatingHearts() {
+        for (let i = 0; i < 15; i++) {
+          const heart = document.createElement("div");
+          heart.innerHTML = "❤️";
+          heart.classList.add("floating-heart");
+          heart.style.left = Math.random() * 100 + "vw";
+          heart.style.animationDuration = Math.random() * 10 + 10 + "s";
+          heart.style.animationDelay = Math.random() * 5 + "s";
+          heart.style.fontSize = Math.random() * 20 + 15 + "px";
+          floatingHearts.appendChild(heart);
+        }
+      }
+
+      // Initialize floating hearts
+      createFloatingHearts();
+
+      // Prevent right-click
+      document.addEventListener("contextmenu", (e) => e.preventDefault());
+
+      // DEBUG: Add console check
+      console.log("Script loaded! YES button:", yesBtn);
+      console.log("YES button current transform:", yesBtn.style.transform);
+    </script>
+  </body>
+</html>
